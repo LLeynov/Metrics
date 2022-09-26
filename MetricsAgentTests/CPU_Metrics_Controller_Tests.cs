@@ -7,7 +7,7 @@ namespace MetricsAgentTests
     {
         private CPU_Metrics_Controller _cpuMetricsController;
 
-        CPU_Metrics_Controller_Tests()
+        public CPU_Metrics_Controller_Tests()
         {
             _cpuMetricsController = new CPU_Metrics_Controller();
         }
