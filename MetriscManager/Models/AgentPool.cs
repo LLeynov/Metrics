@@ -2,18 +2,6 @@
 {
     public class AgentPool
     {
-        //private static AgentPool _instance;
-
-        //public static AgentPool Instance
-        //{
-        //    get
-        //    {
-        //        if (_instance == null)
-        //            _instance = new AgentPool();
-        //        return _instance;
-        //    }
-        //}
-
         private Dictionary<int, AgentInfo> _agents;
 
         public AgentPool()
