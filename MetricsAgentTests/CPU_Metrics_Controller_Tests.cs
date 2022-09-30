@@ -1,4 +1,6 @@
 ﻿using MetricsAgent.Controllers;
+using MetricsAgent.Models;
+using MetricsAgent.Services.Target_Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MetricsAgentTests
@@ -9,7 +11,7 @@ namespace MetricsAgentTests
 
         public CPU_Metrics_Controller_Tests()
         {
-            _cpuMetricsController = new CPU_Metrics_Controller();
+            //_cpuMetricsController = new CPU_Metrics_Controller(cpuMetrics);
         }
 
         [Fact]
