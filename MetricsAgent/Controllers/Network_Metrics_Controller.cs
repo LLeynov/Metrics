@@ -43,5 +43,13 @@ namespace MetricsAgent.Controllers
 
         [HttpGet("all")]
         public ActionResult<IList<Network_MetricsDTO>> GetCpuMetricsAll() => Ok(_mapper.Map<List<Network_MetricsDTO>>(_netWorkMetricsRepository.GetAll()));
+
+        [HttpDelete("delete")]
+        public IActionResult Delete([FromQuery] int id)
+        {
+            _logger.LogInformation("Delete network metric.");
+            _netWorkMetricsRepository.Delete(id);
+            return Ok();
+        }
     }
 }

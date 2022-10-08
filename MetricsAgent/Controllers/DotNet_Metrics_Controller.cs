@@ -42,5 +42,13 @@ namespace MetricsAgent.Controllers
 
         [HttpGet("all")]
         public ActionResult<IList<DotNet_MetricsDTO>> GetCpuMetricsAll() => Ok(_mapper.Map<List<DotNet_MetricsDTO>>(_dotNetMetricsRepository.GetAll()));
+
+        [HttpDelete("delete")]
+        public IActionResult Delete([FromQuery] int id)
+        {
+            _logger.LogInformation("Delete dotnet metric.");
+            _dotNetMetricsRepository.Delete(id);
+            return Ok();
+        }
     }
 }

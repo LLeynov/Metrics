@@ -17,37 +17,37 @@ namespace MetricsAgent.Mappings
 
             CreateMap<CPU_Metrics,CPU_MetricsDTO>();
 
-            ////DotNet
-            //CreateMap<DotNetMetricsCreateRequest, DotNet_Metrics>()
-            //    .ForMember(x => x.Time,
-            //        opt => opt.MapFrom(
-            //            src => (long)src.Time.TotalSeconds));
+            //DotNet
+            CreateMap<DotNetMetricsCreateRequest, DotNet_Metrics>()
+                .ForMember(x => x.Time,
+                    opt => opt.MapFrom(
+                        src => (long)src.Time.TotalSeconds));
 
-            //CreateMap<DotNet_Metrics, DotNet_MetricsDTO>();
+            CreateMap<DotNet_Metrics, DotNet_MetricsDTO>();
 
-            ////HDD
-            //CreateMap<HDDMetricsCreateRequest, HDD_Metrics>()
-            //    .ForMember(x => x.Time,
-            //        opt => opt.MapFrom(
-            //            src => (long)src.Time.TotalSeconds));
+            //HDD
+            CreateMap<HDDMetricsCreateRequest, HDD_Metrics>()
+                .ForMember(x => x.Time,
+                    opt => opt.MapFrom(
+                        src => (long)src.Time.TotalSeconds));
 
-            //CreateMap<HDD_Metrics, HDD_MetricsDTO>();
+            CreateMap<HDD_Metrics, HDD_MetricsDTO>();
 
-            ////Network
-            //CreateMap<NetworkMetricsCreateRequest, Network_Metrics>()
-            //    .ForMember(x => x.Time,
-            //        opt => opt.MapFrom(
-            //            src => (long)src.Time.TotalSeconds));
+            //Network
+            CreateMap<NetworkMetricsCreateRequest, Network_Metrics>()
+                .ForMember(x => x.Time,
+                    opt => opt.MapFrom(
+                        src => (long)src.Time.TotalSeconds));
 
-            //CreateMap<Network_Metrics, Network_MetricsDTO>();
+            CreateMap<Network_Metrics, Network_MetricsDTO>();
 
-            ////RAM
-            //CreateMap<RAMMetricsCreateRequest, RAM_Metrics>()
-            //    .ForMember(x => x.Time,
-            //        opt => opt.MapFrom(
-            //            src => (long)src.Time.TotalSeconds));
+            //RAM
+            CreateMap<RAMMetricsCreateRequest, RAM_Metrics>()
+                .ForMember(x => x.Time,
+                    opt => opt.MapFrom(
+                        src => (long)src.Time.TotalSeconds));
 
-            //CreateMap<RAM_Metrics, RAM_MetricsDTO>();
+            CreateMap<RAM_Metrics, RAM_MetricsDTO>();
         }
     }
 }

@@ -44,5 +44,13 @@ namespace MetricsAgent.Controllers
 
         [HttpGet("all")]
         public ActionResult<IList<RAM_MetricsDTO>> GetCpuMetricsAll() => Ok(_mapper.Map<List<RAM_MetricsDTO>>(_ramMetricsRepository.GetAll()));
+
+        [HttpDelete("delete")]
+        public IActionResult Delete([FromQuery] int id)
+        {
+            _logger.LogInformation("Delete ram metric.");
+            _ramMetricsRepository.Delete(id);
+            return Ok();
+        }
     }
 }

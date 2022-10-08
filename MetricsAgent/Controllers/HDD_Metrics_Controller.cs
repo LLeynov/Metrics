@@ -42,6 +42,14 @@ namespace MetricsAgent.Controllers
 
         [HttpGet("all")]
         public ActionResult<IList<HDD_MetricsDTO>> GetCpuMetricsAll() => Ok(_mapper.Map<List<HDD_MetricsDTO>>(_hddMetricsRepository.GetAll()));
+
+        [HttpDelete("delete")]
+        public IActionResult Delete([FromQuery] int id)
+        {
+            _logger.LogInformation("Delete hdd metric.");
+            _hddMetricsRepository.Delete(id);
+            return Ok();
+        }
     }
 
 }

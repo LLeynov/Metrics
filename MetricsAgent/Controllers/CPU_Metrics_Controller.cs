@@ -2,8 +2,10 @@
 using MetricsAgent.Models;
 using MetricsAgent.Models.DTO;
 using MetricsAgent.Models.Requests;
+using MetricsAgent.Services.Impl;
 using MetricsAgent.Services.Target_Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Data.SQLite;
 
 namespace MetricsAgent.Controllers
 {
@@ -43,5 +45,13 @@ namespace MetricsAgent.Controllers
 
         [HttpGet("all")]
         public ActionResult<IList<CPU_MetricsDTO>> GetCpuMetricsAll() => Ok(_mapper.Map<List<CPU_MetricsDTO>>(_cpuMetricsRepository.GetAll()));
+
+        [HttpDelete("delete")]
+        public IActionResult Delete([FromQuery] int id)
+        {
+            _logger.LogInformation("Delete cpu metric.");
+            _cpuMetricsRepository.Delete(id);
+            return Ok();
+        }
     }
 }
