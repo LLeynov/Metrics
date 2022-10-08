@@ -11,8 +11,11 @@
 
         public void Add(AgentInfo agent)
         {
-            if (!_agents.ContainsKey(agent.AgentId))
-                _agents.Add(agent.AgentId, agent);
+            lock (_agents)
+            {
+                if (!_agents.ContainsKey(agent.AgentId))
+                    _agents.Add(agent.AgentId, agent);
+            }
         }
 
         public AgentInfo[] Get()
