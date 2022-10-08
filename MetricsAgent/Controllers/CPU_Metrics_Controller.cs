@@ -9,7 +9,7 @@ using System.Data.SQLite;
 
 namespace MetricsAgent.Controllers
 {
-
+     
     [Route("api/metrics/CPU")]
     [ApiController]
     public class CPU_Metrics_Controller : ControllerBase
@@ -23,7 +23,7 @@ namespace MetricsAgent.Controllers
         {
             _cpuMetricsRepository = cpuMetrics;
             _logger = logger;
-            _mapper = mapper;
+            _mapper = mapper ;
         }
 
         [HttpPost("create")]
