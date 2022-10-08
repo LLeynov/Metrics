@@ -1,8 +1,8 @@
-using MetricsAgent.Models;
-using MetricsAgent.Services;
 using MetricsAgent.Services.Impl;
 using MetricsAgent.Services.Target_Interfaces;
 using System.Data.SQLite;
+using AutoMapper;
+using MetricsAgent.Mappings;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.HttpLogging;
@@ -14,7 +14,26 @@ namespace MetricsAgent
     {
         public static void Main(string[] args)
         {
+            
+
             var builder = WebApplication.CreateBuilder(args);
+
+            #region Configure Options
+
+           builder.Services.Configure<DatabaseOptions>(options =>
+            {
+                builder.Configuration.GetSection("Settings:DatabaseOptions").Bind(options);
+            });
+
+            #endregion
+
+            #region ConfigureMapping
+
+            var mapperConfiguration = new MapperConfiguration(mp => mp.AddProfile(new
+                MapperProfile()));
+            var mapper = mapperConfiguration.CreateMapper();
+            builder.Services.AddSingleton(mapper);
+            #endregion
 
             builder.Host.ConfigureLogging(logging =>
             {
