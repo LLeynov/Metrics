@@ -2,11 +2,20 @@ using MetricsAgent.Services.Impl;
 using MetricsAgent.Services.Target_Interfaces;
 using System.Data.SQLite;
 using AutoMapper;
+using Dapper;
 using MetricsAgent.Mappings;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.HttpLogging;
 using NLog.Web;
+using FluentMigrator.Runner;
+using MetricsAgent.Jobs;
+using MetricsAgent.Jobs.Factories;
+using Microsoft.Extensions.Options;
+using Quartz;
+using Quartz.Impl;
+using Quartz.Spi;
+using MetricsAgent.Jobs.Target_Jobs;
 
 namespace MetricsAgent
 {
@@ -14,25 +23,36 @@ namespace MetricsAgent
     {
         public static void Main(string[] args)
         {
-            
+
 
             var builder = WebApplication.CreateBuilder(args);
 
             #region Configure Options
 
-           builder.Services.Configure<DatabaseOptions>(options =>
-            {
-                builder.Configuration.GetSection("Settings:DatabaseOptions").Bind(options);
-            });
+            builder.Services.Configure<DatabaseOptions>(options =>
+             {
+                 builder.Configuration.GetSection("Settings:DatabaseOptions").Bind(options);
+             });
 
             #endregion
 
-            #region ConfigureMapping
+            #region Configure Mapping
 
             var mapperConfiguration = new MapperConfiguration(mp => mp.AddProfile(new
                 MapperProfile()));
             var mapper = mapperConfiguration.CreateMapper();
             builder.Services.AddSingleton(mapper);
+            #endregion
+
+            #region Configure FluentMigrator
+
+            builder.Services.AddFluentMigratorCore()
+                .ConfigureRunner(rb => rb.AddSQLite()
+                    .WithGlobalConnectionString(builder.Configuration
+                        ["Settings:DatabaseOptions:ConnectionString"].ToString())
+                    .ScanIn(typeof(Program).Assembly).For.Migrations()
+                ).AddLogging(lb => lb.AddFluentMigratorConsole());
+
             #endregion
 
             builder.Host.ConfigureLogging(logging =>
@@ -53,12 +73,37 @@ namespace MetricsAgent
             });
 
             // Add services to the container.
+            builder.Services.AddSingleton<IJobFactory, SingletonJobFactory>();
+            builder.Services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
 
-            builder.Services.AddScoped<ICpuMetricsRepository, CPUMetricsRepository>();
-            builder.Services.AddScoped<IDotNetMetricsRepository, DotNetMetricsRepository>();
-            builder.Services.AddScoped<IHDDMetricsRepository, HDDMetricsRepository>();
-            builder.Services.AddScoped<INetWorkMetricsRepository, NetworkMetricsRepository>();
-            builder.Services.AddScoped<IRAMMetricsRepository, RAMMetricsRepository>();
+            builder.Services.AddSingleton<CPU_Metrics_Job>();
+            builder.Services.AddSingleton(new JobSchedule(typeof(CPU_Metrics_Job),
+                "0/5 * * ? * * *"));
+
+            builder.Services.AddSingleton<DotNet_Metrics_Job>();
+            builder.Services.AddSingleton(new JobSchedule(typeof(DotNet_Metrics_Job),
+                "0/5 * * ? * * *"));
+
+            builder.Services.AddSingleton<HDD_Metrics_Job>();
+            builder.Services.AddSingleton(new JobSchedule(typeof(HDD_Metrics_Job),
+                "0/5 * * ? * * *"));
+
+            builder.Services.AddSingleton<RAM_Metrics_Job>();
+            builder.Services.AddSingleton(new JobSchedule(typeof(RAM_Metrics_Job),
+                "0/5 * * ? * * *"));
+
+            //builder.Services.AddSingleton<Network_Metrics_Job>();
+            //builder.Services.AddSingleton(new JobSchedule(typeof(Network_Metrics_Job),
+            //    "0/5 * * ? * * *"));
+
+            builder.Services.AddHostedService<QuartzHostedService>();
+
+
+            builder.Services.AddSingleton<ICpuMetricsRepository, CPUMetricsRepository>();
+            builder.Services.AddSingleton<IDotNetMetricsRepository, DotNetMetricsRepository>();
+            builder.Services.AddSingleton<IHDDMetricsRepository, HDDMetricsRepository>();
+            //builder.Services.AddSingleton<INetWorkMetricsRepository, NetworkMetricsRepository>();
+            builder.Services.AddSingleton<IRAMMetricsRepository, RAMMetricsRepository>();
 
             //ConfigureSqlLiteConnection();// - Поскольку уже создали таблицу - повторное использование выдаст ИСКЛЮЧЕНИЕ!!!
 
@@ -92,64 +137,16 @@ namespace MetricsAgent
             app.UseAuthorization();
             app.UseHttpLogging();
 
+            var serviceScopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
+            using (IServiceScope serviceScope = serviceScopeFactory.CreateScope())
+            {
+                var migrationRunner = serviceScope.ServiceProvider.GetRequiredService<IMigrationRunner>();
+                migrationRunner.MigrateUp();
+            }
+
             app.MapControllers();
 
             app.Run();
-        }
-
-        private static void ConfigureSqlLiteConnection()
-        {
-            const string connectionString =
-                "Data Source = metrics.db; Version = 3; Pooling = true; Max Pool Size = 100;";
-            var connection = new SQLiteConnection(connectionString);
-            connection.Open();
-            PrepareSchema(connection);
-        }
-
-
-
-        private static void PrepareSchema(SQLiteConnection connection)
-        {
-            using (var command = new SQLiteCommand(connection))
-            {
-                //Задаём новый текст команды для выполнения
-                //Удаляем таблицу с метриками,если она есть в БД
-                command.CommandText = "DROP TABLE IF EXISTS cpumetrics";
-                //Отправляем запрос в БД
-                command.ExecuteNonQuery();
-                command.CommandText =
-                    @"CREATE TABLE cpumetrics(id INTEGER PRIMARY KEY,
-                    value INT, time INT)";
-                command.ExecuteNonQuery();
-
-                command.CommandText = "DROP TABLE IF EXISTS dotnetmetrics";
-                command.ExecuteNonQuery();
-                command.CommandText =
-                    @"CREATE TABLE dotnetmetrics(id INTEGER PRIMARY KEY,
-                    value INT, time INT)";
-                command.ExecuteNonQuery();
-
-                command.CommandText = "DROP TABLE IF EXISTS hddmetrics";
-                command.ExecuteNonQuery();
-                command.CommandText =
-                    @"CREATE TABLE hddmetrics(id INTEGER PRIMARY KEY,
-                    value INT, time INT)";
-                command.ExecuteNonQuery();
-
-                command.CommandText = "DROP TABLE IF EXISTS networkmetrics";
-                command.ExecuteNonQuery();
-                command.CommandText =
-                    @"CREATE TABLE networkmetrics(id INTEGER PRIMARY KEY,
-                    value INT, time INT)";
-                command.ExecuteNonQuery();
-
-                command.CommandText = "DROP TABLE IF EXISTS rammetrics";
-                command.ExecuteNonQuery();
-                command.CommandText =
-                    @"CREATE TABLE rammetrics(id INTEGER PRIMARY KEY,
-                    value INT, time INT)";
-                command.ExecuteNonQuery();
-            }
         }
     }
 }

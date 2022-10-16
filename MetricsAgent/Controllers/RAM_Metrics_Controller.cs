@@ -25,16 +25,6 @@ namespace MetricsAgent.Controllers
             _mapper = mapper;
         }
 
-
-        [HttpPost("create")]
-        public IActionResult Create([FromBody] RAMMetricsCreateRequest request)
-        {
-            _logger.LogInformation("Create RAM metric.");
-            _ramMetricsRepository.Create(
-                _mapper.Map<RAM_Metrics>(request));
-            return Ok(); 
-        }
-
         [HttpGet("from/{timeFrom}/to/{timeTo}")]
         public ActionResult<IList<RAM_Metrics>> GetRamMetrics([FromRoute] TimeSpan timeFrom, [FromRoute] TimeSpan timeTo)
         {
@@ -45,12 +35,21 @@ namespace MetricsAgent.Controllers
         [HttpGet("all")]
         public ActionResult<IList<RAM_MetricsDTO>> GetCpuMetricsAll() => Ok(_mapper.Map<List<RAM_MetricsDTO>>(_ramMetricsRepository.GetAll()));
 
-        [HttpDelete("delete")]
-        public IActionResult Delete([FromQuery] int id)
-        {
-            _logger.LogInformation("Delete ram metric.");
-            _ramMetricsRepository.Delete(id);
-            return Ok();
-        }
+        //[HttpPost("create")]
+        //public IActionResult Create([FromBody] RAMMetricsCreateRequest request)
+        //{
+        //    _logger.LogInformation("Create RAM metric.");
+        //    _ramMetricsRepository.Create(
+        //        _mapper.Map<RAM_Metrics>(request));
+        //    return Ok(); 
+        //}
+
+        //[HttpDelete("delete")]
+        //public IActionResult Delete([FromQuery] int id)
+        //{
+        //    _logger.LogInformation("Delete ram metric.");
+        //    _ramMetricsRepository.Delete(id);
+        //    return Ok();
+        //}
     }
 }

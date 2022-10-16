@@ -24,15 +24,6 @@ namespace MetricsAgent.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("create")]
-        public IActionResult Create([FromBody] HDDMetricsCreateRequest request)
-        {
-            _logger.LogInformation("Create HDD metric.");
-            _hddMetricsRepository.Create(
-                _mapper.Map<HDD_Metrics>(request));
-            return Ok();
-        }
-
         [HttpGet("from /{timeFrom}/to/{timeTo}")]
         public ActionResult<IList<HDD_MetricsDTO>> GetHDDMetrics([FromRoute] TimeSpan timeFrom, [FromRoute] TimeSpan timeTo)
         {
@@ -43,13 +34,23 @@ namespace MetricsAgent.Controllers
         [HttpGet("all")]
         public ActionResult<IList<HDD_MetricsDTO>> GetCpuMetricsAll() => Ok(_mapper.Map<List<HDD_MetricsDTO>>(_hddMetricsRepository.GetAll()));
 
-        [HttpDelete("delete")]
-        public IActionResult Delete([FromQuery] int id)
-        {
-            _logger.LogInformation("Delete hdd metric.");
-            _hddMetricsRepository.Delete(id);
-            return Ok();
-        }
+
+        //[HttpPost("create")]
+        //public IActionResult Create([FromBody] HDDMetricsCreateRequest request)
+        //{
+        //    _logger.LogInformation("Create HDD metric.");
+        //    _hddMetricsRepository.Create(
+        //        _mapper.Map<HDD_Metrics>(request));
+        //    return Ok();
+        //}
+
+        //[HttpDelete("delete")]
+        //public IActionResult Delete([FromQuery] int id)
+        //{
+        //    _logger.LogInformation("Delete hdd metric.");
+        //    _hddMetricsRepository.Delete(id);
+        //    return Ok();
+        //}
     }
 
 }

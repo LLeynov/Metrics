@@ -26,15 +26,6 @@ namespace MetricsAgent.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("create")]
-        public IActionResult Create([FromBody] CpuMetricCreateRequest request)
-        {
-            _logger.LogInformation("Create cpu metric.");
-            _cpuMetricsRepository.Create(_mapper.Map<CPU_Metrics>(request));
-          
-            return Ok();
-        }
-
         [HttpGet("from/{timeFrom}/to/{timeTo}")]
         public ActionResult<IList<CPU_MetricsDTO>> GetCPUMetrics([FromRoute] TimeSpan timeFrom, [FromRoute] TimeSpan timeTo)
         {
@@ -46,12 +37,23 @@ namespace MetricsAgent.Controllers
         [HttpGet("all")]
         public ActionResult<IList<CPU_MetricsDTO>> GetCpuMetricsAll() => Ok(_mapper.Map<List<CPU_MetricsDTO>>(_cpuMetricsRepository.GetAll()));
 
-        [HttpDelete("delete")]
-        public IActionResult Delete([FromQuery] int id)
-        {
-            _logger.LogInformation("Delete cpu metric.");
-            _cpuMetricsRepository.Delete(id);
-            return Ok();
-        }
+
+        //[HttpPost("create")]
+        //public IActionResult Create([FromBody] CpuMetricCreateRequest request)
+        //{
+        //    _logger.LogInformation("Create cpu metric.");
+        //    _cpuMetricsRepository.Create(_mapper.Map<CPU_Metrics>(request));
+
+        //    return Ok();
+        //}
+
+        //[HttpDelete("delete")]
+        //public IActionResult Delete([FromQuery] int id)
+        //{
+        //    _logger.LogInformation("Delete cpu metric.");
+        //    _cpuMetricsRepository.Delete(id);
+        //    return Ok();
+        //}
+
     }
 }

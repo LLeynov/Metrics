@@ -25,15 +25,6 @@ namespace MetricsAgent.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("create")]
-        public IActionResult Create([FromBody] NetworkMetricsCreateRequest request)
-        {
-            _logger.LogInformation("Create Network metric.");
-            _netWorkMetricsRepository.Create(
-                _mapper.Map<Network_Metrics>(request));
-            return Ok();
-        }
-
         [HttpGet("from/{timeFrom}/to/{timeTo}")]
         public ActionResult<IList<Network_MetricsDTO>> GetNetworkMetrics([FromRoute] TimeSpan timeFrom, [FromRoute] TimeSpan timeTo)
         {
@@ -44,12 +35,21 @@ namespace MetricsAgent.Controllers
         [HttpGet("all")]
         public ActionResult<IList<Network_MetricsDTO>> GetCpuMetricsAll() => Ok(_mapper.Map<List<Network_MetricsDTO>>(_netWorkMetricsRepository.GetAll()));
 
-        [HttpDelete("delete")]
-        public IActionResult Delete([FromQuery] int id)
-        {
-            _logger.LogInformation("Delete network metric.");
-            _netWorkMetricsRepository.Delete(id);
-            return Ok();
-        }
+        //[HttpPost("create")]
+        //public IActionResult Create([FromBody] NetworkMetricsCreateRequest request)
+        //{
+        //    _logger.LogInformation("Create Network metric.");
+        //    _netWorkMetricsRepository.Create(
+        //        _mapper.Map<Network_Metrics>(request));
+        //    return Ok();
+        //}
+
+        //[HttpDelete("delete")]
+        //public IActionResult Delete([FromQuery] int id)
+        //{
+        //    _logger.LogInformation("Delete network metric.");
+        //    _netWorkMetricsRepository.Delete(id);
+        //    return Ok();
+        //}
     }
 }
