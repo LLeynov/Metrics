@@ -102,7 +102,7 @@ namespace MetricsAgent
             builder.Services.AddSingleton<ICpuMetricsRepository, CPUMetricsRepository>();
             builder.Services.AddSingleton<IDotNetMetricsRepository, DotNetMetricsRepository>();
             builder.Services.AddSingleton<IHDDMetricsRepository, HDDMetricsRepository>();
-            //builder.Services.AddSingleton<INetWorkMetricsRepository, NetworkMetricsRepository>();
+            builder.Services.AddSingleton<INetWorkMetricsRepository, NetworkMetricsRepository>();
             builder.Services.AddSingleton<IRAMMetricsRepository, RAMMetricsRepository>();
 
             //ConfigureSqlLiteConnection();// - Поскольку уже создали таблицу - повторное использование выдаст ИСКЛЮЧЕНИЕ!!!

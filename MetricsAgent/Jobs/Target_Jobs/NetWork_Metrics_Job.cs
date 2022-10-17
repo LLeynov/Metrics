@@ -10,7 +10,7 @@ namespace MetricsAgent.Jobs.Target_Jobs
     public class Network_Metrics_Job : IJob
     {
         private readonly INetWorkMetricsRepository _networkMetricsRepository;
-        const string networkCard = "Broadcom NetLink [TM] Gigabit Ethernet";
+        const string networkCard = "Realtek PCIe GbE Family Controller";
 
         public Network_Metrics_Job(INetWorkMetricsRepository networkMetricsRepository)
         {
