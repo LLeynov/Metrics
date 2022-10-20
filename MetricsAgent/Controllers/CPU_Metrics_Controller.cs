@@ -17,6 +17,8 @@ namespace MetricsAgent.Controllers
         private readonly ILogger<CPU_Metrics_Controller> _logger;
         private readonly ICpuMetricsRepository _cpuMetricsRepository;
         private readonly IMapper _mapper;
+        
+        
         public CPU_Metrics_Controller(ICpuMetricsRepository cpuMetrics, 
             ILogger<CPU_Metrics_Controller> logger, 
             IMapper mapper)
@@ -26,13 +28,25 @@ namespace MetricsAgent.Controllers
             _mapper = mapper ;
         }
 
+        
         [HttpGet("from/{timeFrom}/to/{timeTo}")]
-        public ActionResult<IList<CPU_MetricsDTO>> GetCPUMetrics([FromRoute] TimeSpan timeFrom, [FromRoute] TimeSpan timeTo)
+        public ActionResult<GetCpuMetricsResponse> GetCpuMetrics(
+            [FromRoute] TimeSpan timeFrom, [FromRoute] TimeSpan timeTo)
         {
             _logger.LogInformation("Get CPU metrics.");
-            return Ok(_mapper.Map<List<CPU_MetricsDTO>>
-                (_cpuMetricsRepository.GetByTimePeriod(timeFrom, timeTo)));
+
+            return Ok(new GetCpuMetricsResponse
+            {
+                Metrics = _cpuMetricsRepository.GetByTimePeriod(timeFrom, timeTo)
+                    .Select(metric => _mapper.Map<CPU_MetricsDTO>(metric)).ToList()
+            });
         }
+        
+
+
+
+
+
 
         [HttpGet("all")]
         public ActionResult<IList<CPU_MetricsDTO>> GetCpuMetricsAll() => Ok(_mapper.Map<List<CPU_MetricsDTO>>(_cpuMetricsRepository.GetAll()));

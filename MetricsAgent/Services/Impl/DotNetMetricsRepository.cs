@@ -14,7 +14,7 @@ namespace MetricsAgent.Services.Impl
             _databaseOptions = databaseOptions;
         }
 
-        public void Create(DotNet_Metrics item)
+        public void Create(DotNet_Metrics item)// DATABASE IS LOCKED 
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MetriscManager.Controllers
+namespace MetricsManager.Controllers
 {
     [Route("api/DOTNET")]
     [ApiController]

@@ -47,10 +47,12 @@ namespace MetricsAgent.Services.Impl
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            return connection.QuerySingle<CPU_Metrics>("SELECT * FROM cpumetrics WHERE id=@id", new
+            CPU_Metrics Metrics = connection.QuerySingle<CPU_Metrics>("SELECT * FROM cpumetrics WHERE id=@id", new
             {
                 Id = id
             });
+
+            return Metrics;
         }
 
         public IList<CPU_Metrics> GetByTimePeriod(TimeSpan timeFrom, TimeSpan timeTo)

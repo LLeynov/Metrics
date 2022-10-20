@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using MetricsAgent.Models;
 using MetricsAgent.Services.Target_Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 
 namespace MetricsAgent.Jobs.Target_Jobs
@@ -9,28 +10,39 @@ namespace MetricsAgent.Jobs.Target_Jobs
     {
         private readonly ICpuMetricsRepository _cpuMetricsRepository;
         private PerformanceCounter _cpuCounter;
-        public CPU_Metrics_Job(ICpuMetricsRepository cpuMetricsRepository)
+        private IServiceScopeFactory _serviceScopeFactory;
+
+        public CPU_Metrics_Job(ICpuMetricsRepository cpuMetricsRepository, IServiceScopeFactory serviceScopeFactory)
         {
             _cpuMetricsRepository = cpuMetricsRepository;
             _cpuCounter = new PerformanceCounter("Processor", "% Processor Time",
                 "_Total");
+            _serviceScopeFactory = serviceScopeFactory;
         }
         public Task Execute(IJobExecutionContext context)
         {
-            Debug.WriteLine($"{DateTime.Now}> Cpu_Metrics_Job");
 
-            //Получаем значение занятости CPU
-            float cpuUsageInPercents = _cpuCounter.NextValue();
-
-            //Узнаём,когда сняли значение метрики
-            var time = TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
-
-            //Записываем что-то посредством репозитория
-            _cpuMetricsRepository.Create(new CPU_Metrics
+            using (IServiceScope serviceScope = _serviceScopeFactory.CreateScope())
             {
-                Time = (long)time.TotalSeconds,
-                Value = (int)cpuUsageInPercents
-            });
+                var cpuMetricsRepository = serviceScope.ServiceProvider.GetService<ICpuMetricsRepository>();
+                try
+                {
+                    var cpuUsageInPercents = _cpuCounter.NextValue();
+                    var time = TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+                    Debug.WriteLine($"{time} > {cpuUsageInPercents}");
+                    cpuMetricsRepository.Create(new Models.CPU_Metrics
+                    {
+                        Value = (int)cpuUsageInPercents,
+                        Time = (long)time.TotalSeconds
+                    });
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+
+
             return Task.CompletedTask;
         }
     }

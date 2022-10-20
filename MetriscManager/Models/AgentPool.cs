@@ -9,24 +9,21 @@
             _agents = new Dictionary<int, AgentInfo>();
         }
 
-        public void Add(AgentInfo agent)
+        public void Add(AgentInfo value)
         {
-            lock (_agents)
-            {
-                if (!_agents.ContainsKey(agent.AgentId))
-                    _agents.Add(agent.AgentId, agent);
-            }
+            if (!_agents.ContainsKey(value.AgentId))
+                _agents.Add(value.AgentId, value);
         }
-
         public AgentInfo[] Get()
         {
             return _agents.Values.ToArray();
         }
 
-        public Dictionary<int, AgentInfo> Agent
+        public Dictionary<int, AgentInfo> Agents
         {
             get { return _agents; }
             set { _agents = value; }
         }
+
     }
 }

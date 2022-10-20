@@ -4,6 +4,6 @@
     {
         public int AgentId { get; set; }
         public Uri AgentAdress { get; set; }
-        public bool Enabeled { get; set; }
+        public bool Enable { get; set; }
     }
 }
