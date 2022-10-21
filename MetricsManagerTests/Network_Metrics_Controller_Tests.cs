@@ -17,11 +17,11 @@ namespace MetricsManagerTests
         {
             //Готовим данные для теста
             int agentId = 1;
-            TimeSpan timeFrom = TimeSpan.FromSeconds(0);
-            TimeSpan timeTo = TimeSpan.FromSeconds(100);
+            TimeSpan fromTime = TimeSpan.FromSeconds(0);
+            TimeSpan toTime = TimeSpan.FromSeconds(100);
 
             //Исполнение самого метода
-            var result = _networkMetricsController.GetNetWorkMetricsFromAgent(agentId, timeFrom, timeTo);
+            var result = _networkMetricsController.GetNetWorkMetricsFromAgent(agentId, fromTime, toTime);
 
             //Эталонный результат
             Assert.IsAssignableFrom<IActionResult>(result);
@@ -31,11 +31,11 @@ namespace MetricsManagerTests
         public void GetNetWorkMetricsFromAll()
         {
             //Готовим данные для теста
-            TimeSpan timeFrom = TimeSpan.FromSeconds(0);
-            TimeSpan timeTo = TimeSpan.FromSeconds(100);
+            TimeSpan fromTime = TimeSpan.FromSeconds(0);
+            TimeSpan toTime = TimeSpan.FromSeconds(100);
 
             //Исполнение самого метода
-            var result = _networkMetricsController.GetNetWorkMetricsFromAll(timeFrom, timeTo);
+            var result = _networkMetricsController.GetNetWorkMetricsFromAll(fromTime, toTime);
 
             //Эталонный результат
             Assert.IsAssignableFrom<IActionResult>(result);

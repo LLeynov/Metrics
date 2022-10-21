@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using MetricsManager.Models.BasedMetrics;
 
 namespace MetricsManager.Models.Requests
 {
@@ -7,6 +8,6 @@ namespace MetricsManager.Models.Requests
         public int AgentId { get; set; }
 
         [JsonPropertyName("metrics")]
-        public CpuMetric[] /*ПУСТОЙ ПИДОРСКИЙ МАССИВ*/ Metrics { get; set; }
+        public CpuMetric[] /*ну не такой уж и пустой (TimeSpan)*/ Metrics { get; set; }
     }
 }

@@ -52,28 +52,16 @@ namespace MetricsAgent.Services.Impl
             });
         }
 
-        public IList<DotNet_Metrics> GetByTimePeriod(TimeSpan timeFrom, TimeSpan timeTo)
+        public IList<DotNet_Metrics> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            return connection.Query<DotNet_Metrics>("SELECT * FROM dotnetmetrics where time >= @timeFrom and time <= @timeTo",
+            return connection.Query<DotNet_Metrics>("SELECT * FROM dotnetmetrics where time >= @fromTime and time <= @toTime",
                 new
                 {
-                    timeFrom = timeFrom.TotalSeconds,
-                    timeTo = timeTo.TotalSeconds
+                    fromTime = fromTime.TotalSeconds,
+                    toTime = toTime.TotalSeconds
                 }).ToList();
-        }
-
-        public void Update(DotNet_Metrics item)
-        {
-            using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
-
-            connection.Execute("UPDATE dotnetmetrics SET value = @value, time = @time WHERE id = @id;", new
-            {
-                value = item.Value,
-                time = item.Time,
-                id = item.Id
-            });
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MetricsAgent.Models;
 using MetricsAgent.Models.DTO;
+using MetricsAgent.Models.DTO.Response;
 using MetricsAgent.Models.Requests;
 using MetricsAgent.Services;
 using MetricsAgent.Services.Impl;
@@ -11,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MetricsAgent.Controllers
 {
     
-    [Route("api/metrics/RAM")]
+    [Route("api/metrics/ram")]
     [ApiController]
     public class RAM_Metrics_Controller : ControllerBase
     {
@@ -25,31 +26,18 @@ namespace MetricsAgent.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("from/{timeFrom}/to/{timeTo}")]
-        public ActionResult<IList<RAM_Metrics>> GetRamMetrics([FromRoute] TimeSpan timeFrom, [FromRoute] TimeSpan timeTo)
+        [HttpGet("from/{fromTime}/to/{toTime}")]
+        public ActionResult<GetRamMetricsResponse> GetRamMetrics([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            _logger.LogInformation("Get RAM metrics.");
-            return Ok(_mapper.Map<List<RAM_MetricsDTO>>(_ramMetricsRepository.GetByTimePeriod(timeFrom, timeTo)));
+            _logger.LogInformation("Get ram metrics.");
+            return Ok(new GetRamMetricsResponse
+            {
+                Metrics = _ramMetricsRepository.GetByTimePeriod(fromTime, toTime)
+                    .Select(metric => _mapper.Map<RAM_MetricsDTO>(metric)).ToList()
+            });
         }
 
         [HttpGet("all")]
         public ActionResult<IList<RAM_MetricsDTO>> GetCpuMetricsAll() => Ok(_mapper.Map<List<RAM_MetricsDTO>>(_ramMetricsRepository.GetAll()));
-
-        //[HttpPost("create")]
-        //public IActionResult Create([FromBody] RAMMetricsCreateRequest request)
-        //{
-        //    _logger.LogInformation("Create RAM metric.");
-        //    _ramMetricsRepository.Create(
-        //        _mapper.Map<RAM_Metrics>(request));
-        //    return Ok(); 
-        //}
-
-        //[HttpDelete("delete")]
-        //public IActionResult Delete([FromQuery] int id)
-        //{
-        //    _logger.LogInformation("Delete ram metric.");
-        //    _ramMetricsRepository.Delete(id);
-        //    return Ok();
-        //}
     }
 }

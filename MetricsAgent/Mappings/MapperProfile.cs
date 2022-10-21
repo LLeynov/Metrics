@@ -33,13 +33,6 @@ namespace MetricsAgent.Mappings
 
             CreateMap<HDD_Metrics, HDD_MetricsDTO>();
 
-            //Network
-            CreateMap<NetworkMetricsCreateRequest, Network_Metrics>()
-                .ForMember(x => x.Time,
-                    opt => opt.MapFrom(
-                        src => (long)src.Time.TotalSeconds));
-
-            CreateMap<Network_Metrics, Network_MetricsDTO>();
 
             //RAM
             CreateMap<RAMMetricsCreateRequest, RAM_Metrics>()

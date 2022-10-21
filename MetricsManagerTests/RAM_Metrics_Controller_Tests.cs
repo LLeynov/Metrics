@@ -1,4 +1,4 @@
-﻿using MetriscManager.Controllers;
+﻿using MetricsManager.Controllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MetricsManagerTests
@@ -17,11 +17,11 @@ namespace MetricsManagerTests
         {
             //Готовим данные для теста
             int agentId = 1;
-            TimeSpan timeFrom = TimeSpan.FromSeconds(0);
-            TimeSpan timeTo = TimeSpan.FromSeconds(100);
+            TimeSpan fromTime = TimeSpan.FromSeconds(0);
+            TimeSpan toTime = TimeSpan.FromSeconds(100);
 
             //Исполнение самого метода
-            var result = _ramMetricsController.GetRAMMetricsFromAgent(agentId, timeFrom, timeTo);
+            var result = _ramMetricsController.GetRAMMetricsFromAgent(agentId, fromTime, toTime);
 
             //Эталонный результат
             Assert.IsAssignableFrom<IActionResult>(result);
@@ -31,11 +31,11 @@ namespace MetricsManagerTests
         public void GetRAMMetricsFromAll()
         {
             //Готовим данные для теста
-            TimeSpan timeFrom = TimeSpan.FromSeconds(0);
-            TimeSpan timeTo = TimeSpan.FromSeconds(100);
+            TimeSpan fromTime = TimeSpan.FromSeconds(0);
+            TimeSpan toTime = TimeSpan.FromSeconds(100);
 
             //Исполнение самого метода
-            var result = _ramMetricsController.GetRAMMetricsFromAll(timeFrom, timeTo);
+            var result = _ramMetricsController.GetRAMMetricsFromAll(fromTime, toTime);
 
             //Эталонный результат
             Assert.IsAssignableFrom<IActionResult>(result);

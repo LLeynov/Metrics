@@ -26,16 +26,6 @@ namespace MetricsAgent.Services.Impl
                 });
         }
 
-        public void Delete(int id)
-        {
-            using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
-
-            connection.Execute("DELETE FROM cpumetrics WHERE id=@id", new
-            {
-                Id = id
-            });
-        }
-
         public IList<CPU_Metrics> GetAll()
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
@@ -49,33 +39,22 @@ namespace MetricsAgent.Services.Impl
 
             CPU_Metrics Metrics = connection.QuerySingle<CPU_Metrics>("SELECT * FROM cpumetrics WHERE id=@id", new
             {
-                Id = id
+                id = id
             });
 
             return Metrics;
         }
 
-        public IList<CPU_Metrics> GetByTimePeriod(TimeSpan timeFrom, TimeSpan timeTo)
+        public IList<CPU_Metrics> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            return connection.Query<CPU_Metrics>("SELECT * FROM cpumetrics where time >= @timeFrom and time <= @timeTo", new
+            return connection.Query<CPU_Metrics>("SELECT * FROM cpumetrics where time >= @fromTime and time <= @toTime", new
             {
-                timeFrom = timeFrom.TotalSeconds,
-                timeto = timeTo.TotalSeconds
+                fromTime = fromTime.TotalSeconds,
+                toTime = toTime.TotalSeconds
             }).ToList();
         }
 
-        public void Update(CPU_Metrics item)
-        {
-            using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
-
-            connection.Execute("UPDATE cpumetrics SET value = @value, time = @time WHERE id = @id;", new
-            {
-                value = item.Value,
-                time = item.Time,
-                id = item.Id
-            });
-        }
     }
 }

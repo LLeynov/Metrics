@@ -1,4 +1,4 @@
-﻿using MetriscManager.Controllers;
+﻿using MetricsManager.Controllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MetricsManagerTests
@@ -17,11 +17,11 @@ namespace MetricsManagerTests
         {
             //Готовим данные для теста
             int agentId = 1;
-            TimeSpan timeFrom = TimeSpan.FromSeconds(0);
-            TimeSpan timeTo = TimeSpan.FromSeconds(100);
+            TimeSpan fromTime = TimeSpan.FromSeconds(0);
+            TimeSpan toTime = TimeSpan.FromSeconds(100);
 
             //Исполнение самого метода
-            var result = _dotNetMetricsController.GetDotNetMetricsFromAgent(agentId, timeFrom, timeTo);
+            var result = _dotNetMetricsController.GetDotNetMetricsFromAgent(agentId, fromTime, toTime);
 
             //Эталонный результат
             Assert.IsAssignableFrom<IActionResult>(result);
@@ -32,11 +32,11 @@ namespace MetricsManagerTests
         {
             //Готовим данные для метода
             int agentId = 1;
-            TimeSpan timeFrom = TimeSpan.FromSeconds(0);
-            TimeSpan timeTo = TimeSpan.FromSeconds(100);
+            TimeSpan fromTime = TimeSpan.FromSeconds(0);
+            TimeSpan toTime = TimeSpan.FromSeconds(100);
 
             //Исполнение метода
-            var result = _dotNetMetricsController.GetDotNetMetricsFromAll(timeFrom, timeTo);
+            var result = _dotNetMetricsController.GetDotNetMetricsFromAll(fromTime, toTime);
 
             //Эталонный результат
             Assert.IsAssignableFrom<IActionResult>(result);

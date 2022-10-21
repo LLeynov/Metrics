@@ -26,17 +26,6 @@ namespace MetricsAgent.Services.Impl
                 time = item.Time
             });
         }
-
-        public void Delete(int id)
-        {
-            using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
-
-            connection.Execute("DELETE FROM rammetrics WHERE id=@id", new
-            {
-                id = id
-            });
-        }
-
         public IList<RAM_Metrics> GetAll()
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
@@ -54,27 +43,15 @@ namespace MetricsAgent.Services.Impl
             });
         }
 
-        public IList<RAM_Metrics> GetByTimePeriod(TimeSpan timeFrom, TimeSpan timeTo)
+        public IList<RAM_Metrics> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            return connection.Query<RAM_Metrics>("SELECT * FROM rammetrics where time >= @timeFrom and time <= @timeTo", new
+            return connection.Query<RAM_Metrics>("SELECT * FROM rammetrics where time >= @fromTime and time <= @toTime", new
             {
-                timeFrom = timeFrom.TotalSeconds,
-                timeTo = timeTo.TotalSeconds
+                fromTime = fromTime.TotalSeconds,
+                toTime = toTime.TotalSeconds
             }).ToList();
-        }
-
-        public void Update(RAM_Metrics item)
-        {
-            using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
-
-            connection.Execute("UPDATE rammetrics SET value = @value, time = @time WHERE id = @id;", new
-            {
-                value = item.Value,
-                time = item.Time,
-                id = item.Id
-            });
         }
     }
 }

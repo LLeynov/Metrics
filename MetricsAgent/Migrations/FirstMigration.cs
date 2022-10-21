@@ -23,11 +23,6 @@ namespace MetricsAgent.DAL.Migrations
                 .WithColumn("Value").AsInt32()
                 .WithColumn("Time").AsInt64();
 
-            Create.Table("networkmetrics")
-                .WithColumn("Id").AsInt64().PrimaryKey().Identity()
-                .WithColumn("Value").AsInt32()
-                .WithColumn("Time").AsInt64();
-
             Create.Table("rammetrics")
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
                 .WithColumn("Value").AsInt32()
@@ -39,7 +34,6 @@ namespace MetricsAgent.DAL.Migrations
             Delete.Table("cpumetrics");
             Delete.Table("dotnetmetrics");
             Delete.Table("hddmetrics");
-            Delete.Table("networkmetrics");
             Delete.Table("rammetrics");
         }
     }

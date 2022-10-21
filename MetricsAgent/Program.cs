@@ -9,6 +9,7 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.HttpLogging;
 using NLog.Web;
 using FluentMigrator.Runner;
+using MetricsAgent.Converters;
 using MetricsAgent.Jobs;
 using MetricsAgent.Jobs.Factories;
 using Microsoft.Extensions.Options;
@@ -92,22 +93,17 @@ namespace MetricsAgent
             builder.Services.AddSingleton(new JobSchedule(typeof(RAM_Metrics_Job),
                 "0/5 * * ? * * *"));
 
-            //builder.Services.AddSingleton<Network_Metrics_Job>();
-            //builder.Services.AddSingleton(new JobSchedule(typeof(Network_Metrics_Job),
-            //    "0/5 * * ? * * *"));
-
             builder.Services.AddHostedService<QuartzHostedService>();
 
 
             builder.Services.AddSingleton<ICpuMetricsRepository, CPUMetricsRepository>();
             builder.Services.AddSingleton<IDotNetMetricsRepository, DotNetMetricsRepository>();
             builder.Services.AddSingleton<IHDDMetricsRepository, HDDMetricsRepository>();
-            builder.Services.AddSingleton<INetWorkMetricsRepository, NetworkMetricsRepository>();
             builder.Services.AddSingleton<IRAMMetricsRepository, RAMMetricsRepository>();
 
-            //ConfigureSqlLiteConnection();// - Поскольку уже создали таблицу - повторное использование выдаст ИСКЛЮЧЕНИЕ!!!
-
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+                    options.JsonSerializerOptions.Converters.Add(new CustomTimeSpanConverter()));
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
@@ -117,8 +113,8 @@ namespace MetricsAgent
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MetricsAgent", Version = "v1" });
 
-                //Поддержка TimeBAN
-                c.MapType<TimeSpan>(() => new OpenApiSchema()
+                // Поддержка TimeSpan
+                c.MapType<TimeSpan>(() => new OpenApiSchema
                 {
                     Type = "string",
                     Example = new OpenApiString("00:00:00")
@@ -137,14 +133,14 @@ namespace MetricsAgent
             app.UseAuthorization();
             app.UseHttpLogging();
 
+            app.MapControllers();
+
             var serviceScopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
             using (IServiceScope serviceScope = serviceScopeFactory.CreateScope())
             {
                 var migrationRunner = serviceScope.ServiceProvider.GetRequiredService<IMigrationRunner>();
                 migrationRunner.MigrateUp();
             }
-
-            app.MapControllers();
 
             app.Run();
         }

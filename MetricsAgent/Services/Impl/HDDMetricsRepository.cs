@@ -26,16 +26,6 @@ namespace MetricsAgent.Services.Impl
             });
         }
 
-        public void Delete(int id)
-        {
-            using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
-
-            connection.Execute("DELETE FROM hddmetrics WHERE id=@id", new
-            {
-                Id = id
-            });
-        }
-
         public IList<HDD_Metrics> GetAll()
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
@@ -53,27 +43,15 @@ namespace MetricsAgent.Services.Impl
             });
         }
 
-        public IList<HDD_Metrics> GetByTimePeriod(TimeSpan timeFrom, TimeSpan timeTo)
+        public IList<HDD_Metrics> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
         {
             using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            return connection.Query<HDD_Metrics>("SELECT * FROM hddmetrics where time >= @timeFrom and time <= @timeTo", new
+            return connection.Query<HDD_Metrics>("SELECT * FROM hddmetrics where time >= @fromTime and time <= @toTime", new
             {
-                timeFrom = timeFrom.TotalSeconds,
-                timeTo = timeTo.TotalSeconds
+                fromTime = fromTime.TotalSeconds,
+                toTime = toTime.TotalSeconds
             }).ToList();
-        }
-
-        public void Update(HDD_Metrics item)
-        {
-            using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
-
-            connection.Execute("UPDATE hddmetrics SET value = @value, time = @time WHERE id = @id;", new
-            {
-                value = item.Value,
-                time = item.Time, 
-                id = item.Id
-            });
         }
     }
 }

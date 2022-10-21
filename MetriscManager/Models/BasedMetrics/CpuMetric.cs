@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace MetricsManager.Models.Requests
+namespace MetricsManager.Models.BasedMetrics
 {
     public class CpuMetric
     {

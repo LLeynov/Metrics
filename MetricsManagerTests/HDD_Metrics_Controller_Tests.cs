@@ -1,4 +1,4 @@
-﻿using MetriscManager.Controllers;
+﻿using MetricsManager.Controllers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MetricsManagerTests
@@ -16,11 +16,11 @@ namespace MetricsManagerTests
         {
             //Готовим данные для теста
             int agentId = 1;
-            TimeSpan timeFrom = TimeSpan.FromSeconds(0);
-            TimeSpan timeTo = TimeSpan.FromSeconds(100);
+            TimeSpan fromTime = TimeSpan.FromSeconds(0);
+            TimeSpan toTime = TimeSpan.FromSeconds(100);
 
             //Исполнение самого метода
-            var result = _hddMetricsControllerTests.GetHDDMetricsFromAgent(agentId, timeFrom, timeTo);
+            var result = _hddMetricsControllerTests.GetHDDMetricsFromAgent(agentId, fromTime, toTime);
 
             //Эталонный результат
             Assert.IsAssignableFrom<IActionResult>(result);
@@ -30,11 +30,11 @@ namespace MetricsManagerTests
         public void GetHDDMetricsFromAll_ReturnOk()
         {
             //Готовим данные для метода
-            TimeSpan timeFrom = TimeSpan.FromSeconds(0);
-            TimeSpan timeTo = TimeSpan.FromSeconds(100);
+            TimeSpan fromTime = TimeSpan.FromSeconds(0);
+            TimeSpan toTime = TimeSpan.FromSeconds(100);
 
             //Исполнение метода
-            var result = _hddMetricsControllerTests.GetHDDMetricsFromAll(timeFrom, timeTo);
+            var result = _hddMetricsControllerTests.GetHDDMetricsFromAll(fromTime, toTime);
 
             //Эталонный результат
             Assert.IsAssignableFrom<IActionResult>(result);

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using MetricsAgent.Models;
 using MetricsAgent.Models.DTO;
-using MetricsAgent.Models.Requests;
+using MetricsAgent.Models.DTO.Response;
 using MetricsAgent.Services.Impl;
 using MetricsAgent.Services.Target_Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -9,8 +9,8 @@ using System.Data.SQLite;
 
 namespace MetricsAgent.Controllers
 {
-     
-    [Route("api/metrics/CPU")]
+
+    [Route("api/metrics/cpu")]
     [ApiController]
     public class CPU_Metrics_Controller : ControllerBase
     {
@@ -29,45 +29,22 @@ namespace MetricsAgent.Controllers
         }
 
         
-        [HttpGet("from/{timeFrom}/to/{timeTo}")]
+        [HttpGet("from/{fromTime}/to/{toTime}")]
         public ActionResult<GetCpuMetricsResponse> GetCpuMetrics(
-            [FromRoute] TimeSpan timeFrom, [FromRoute] TimeSpan timeTo)
+            [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            _logger.LogInformation("Get CPU metrics.");
+            _logger.LogInformation("Get cpu metrics.");
 
             return Ok(new GetCpuMetricsResponse
             {
-                Metrics = _cpuMetricsRepository.GetByTimePeriod(timeFrom, timeTo)
+                Metrics = _cpuMetricsRepository.GetByTimePeriod(fromTime, toTime)
                     .Select(metric => _mapper.Map<CPU_MetricsDTO>(metric)).ToList()
             });
         }
         
 
-
-
-
-
-
         [HttpGet("all")]
         public ActionResult<IList<CPU_MetricsDTO>> GetCpuMetricsAll() => Ok(_mapper.Map<List<CPU_MetricsDTO>>(_cpuMetricsRepository.GetAll()));
-
-
-        //[HttpPost("create")]
-        //public IActionResult Create([FromBody] CpuMetricCreateRequest request)
-        //{
-        //    _logger.LogInformation("Create cpu metric.");
-        //    _cpuMetricsRepository.Create(_mapper.Map<CPU_Metrics>(request));
-
-        //    return Ok();
-        //}
-
-        //[HttpDelete("delete")]
-        //public IActionResult Delete([FromQuery] int id)
-        //{
-        //    _logger.LogInformation("Delete cpu metric.");
-        //    _cpuMetricsRepository.Delete(id);
-        //    return Ok();
-        //}
 
     }
 }

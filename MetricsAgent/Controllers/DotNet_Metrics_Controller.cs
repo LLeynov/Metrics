@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MetricsAgent.Models;
 using MetricsAgent.Models.DTO;
+using MetricsAgent.Models.DTO.Response;
 using MetricsAgent.Models.Requests;
 using MetricsAgent.Services;
 using MetricsAgent.Services.Impl;
@@ -10,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MetricsAgent.Controllers
 {
-    [Route("api/metrics/DotNet")]
+    [Route("api/metrics/dotnet")]
     [ApiController]
     public class DotNet_Metrics_Controller : ControllerBase
     {
@@ -24,32 +25,18 @@ namespace MetricsAgent.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("from/{timeFrom}/to/{timeTo}")]
-        public ActionResult<IList<DotNet_MetricsDTO>> GetDotNetMetrics([FromRoute] TimeSpan timeFrom, [FromRoute] TimeSpan timeTo)
+        [HttpGet("from/{fromTime}/to/{toTime}")]
+        public ActionResult<GetDotNetMetricsResponse> GetDotNetMetrics([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            _logger.LogInformation("Get DotNet metrics.");
-            return Ok(_mapper.Map<List<DotNet_MetricsDTO>>(_dotNetMetricsRepository.GetByTimePeriod(timeFrom, timeTo)));
+            _logger.LogInformation("Get dotnet metrics.");
+            return Ok(new GetDotNetMetricsResponse
+            {
+                Metrics = _dotNetMetricsRepository.GetByTimePeriod(fromTime, toTime)
+                    .Select(metric => _mapper.Map<DotNet_MetricsDTO>(metric)).ToList()
+            });
         }
 
         [HttpGet("all")]
         public ActionResult<IList<DotNet_MetricsDTO>> GetCpuMetricsAll() => Ok(_mapper.Map<List<DotNet_MetricsDTO>>(_dotNetMetricsRepository.GetAll()));
-
-
-        //[HttpPost("create")]
-        //public IActionResult Create([FromBody] DotNetMetricsCreateRequest request)
-        //{
-        //    _logger.LogInformation("Create DotNet metric.");
-        //    _dotNetMetricsRepository.Create(
-        //        _mapper.Map<DotNet_Metrics>(request));
-        //    return Ok();
-        //}
-
-        //[HttpDelete("delete")]
-        //public IActionResult Delete([FromQuery] int id)
-        //{
-        //    _logger.LogInformation("Delete dotnet metric.");
-        //    _dotNetMetricsRepository.Delete(id);
-        //    return Ok();
-        //}
     }
 }
