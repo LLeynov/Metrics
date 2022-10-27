@@ -50,7 +50,7 @@ namespace MetricsManager.Client
                             foreach (var metric in response.Metrics)
                             {
                                 Console.WriteLine(
-                                    $"{TimeSpan.FromSeconds(metric.Time).ToString("dd\\.hh\\:mm\\:ss")} >>> {metric.Value}");
+                                    $"{TimeSpan.FromSeconds(metric.Time).ToString("hh\\:mm\\:ss")} >>> {metric.Value}");
                             }
                             Console.WriteLine("Нажмите любую клавишу");
                             Console.ReadKey(true);
@@ -73,7 +73,7 @@ namespace MetricsManager.Client
                             foreach (var metric in response.Metrics)
                             {
                                 Console.WriteLine(
-                                    $"{TimeSpan.FromSeconds(metric.Time).ToString("dd\\.hh\\:mm\\:ss")} >>> {metric.Value}");
+                                    $"{TimeSpan.FromSeconds(metric.Time).ToString("hh\\:mm\\:ss")} >>> {metric.Value}");
                             }
                             Console.WriteLine("Нажмите любую клавишу");
                             Console.ReadKey(true);
@@ -96,7 +96,7 @@ namespace MetricsManager.Client
                             foreach (var metric in response.Metrics)
                             {
                                 Console.WriteLine(
-                                    $"{TimeSpan.FromSeconds(metric.Time).ToString("dd\\.hh\\:mm\\:ss")} >>> {metric.Value}");
+                                    $"{TimeSpan.FromSeconds(metric.Time).ToString("hh\\:mm\\:ss")} >>> {metric.Value}");
                             }
                             Console.WriteLine("Нажмите любую клавишу");
                             Console.ReadKey(true);
@@ -119,7 +119,7 @@ namespace MetricsManager.Client
                             foreach (var metric in response.Metrics)
                             {
                                 Console.WriteLine(
-                                    $"{TimeSpan.FromSeconds(metric.Time).ToString("dd\\.hh\\:mm\\:ss")} >>> {metric.Value}");
+                                    $"{TimeSpan.FromSeconds(metric.Time).ToString("hh\\:mm\\:ss")} >>> {metric.Value}");
                             }
                             Console.WriteLine("Нажмите любую клавишу");
                             Console.ReadKey(true);

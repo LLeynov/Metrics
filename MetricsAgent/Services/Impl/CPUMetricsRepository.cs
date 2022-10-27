@@ -47,13 +47,17 @@ namespace MetricsAgent.Services.Impl
 
         public IList<CPU_Metrics> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime)
         {
-            using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
+            //using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
 
-            return connection.Query<CPU_Metrics>("SELECT * FROM cpumetrics where time >= @fromTime and time <= @toTime", new
-            {
-                fromTime = fromTime.TotalSeconds,
-                toTime = toTime.TotalSeconds
-            }).ToList();
+            //return connection.Query<CPU_Metrics>("SELECT * FROM cpumetrics where time >= @fromTime and time <= @toTime", new
+            //{
+            //    fromTime = fromTime.TotalSeconds,
+            //    toTime = toTime.TotalSeconds
+            //}).ToList();
+            using var connection = new SQLiteConnection(_databaseOptions.Value.ConnectionString);
+            List<CPU_Metrics> metrics = connection.Query<CPU_Metrics>("SELECT * FROM cpumetrics where time >= @timeFrom and time <= @timeTo",
+                new { timeFrom = fromTime.TotalSeconds, timeTo = toTime.TotalSeconds }).ToList();
+            return metrics;
         }
 
     }

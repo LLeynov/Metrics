@@ -29,7 +29,7 @@ namespace MetricsAgent.Jobs.Target_Jobs
                 {
                     var cpuUsageInPercents = _cpuCounter.NextValue();
                     var time = TimeSpan.FromSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
-                    Debug.WriteLine($"{time} > {cpuUsageInPercents}");
+                    //Debug.WriteLine($"{time} > {cpuUsageInPercents}");
                     cpuMetricsRepository.Create(new Models.CPU_Metrics
                     {
                         Value = (int)cpuUsageInPercents,
