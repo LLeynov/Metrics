@@ -4,7 +4,7 @@ namespace MetricsAgent.Services.Target_Interfaces
 {
     public interface IDotNetMetricsRepository : IRepository<DotNet_Metrics>
     {
-        IList<DotNet_Metrics> GetByTimePeriod(TimeSpan fromTime, TimeSpan toTime);
+        IList<DotNet_Metrics> GetByTimePeriod(TimeSpan timeFrom, TimeSpan timeTo);
     }
 }
 

@@ -23,9 +23,10 @@ namespace MetricsManager.Controllers
             _ramMetricsAgentClient = ramMetricsAgentClient;
         }
 
-        [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
+        [HttpGet("ram-get-all-by-id")]
+        //[HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
         public ActionResult<RAMMetricsResponse> GetMetricsFromAgent(
-            [FromRoute] int agentId, [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
+            [FromQuery] int agentId, [FromQuery] TimeSpan fromTime, [FromQuery] TimeSpan toTime)
         {
             return Ok(_ramMetricsAgentClient.GetRamMetrics(new RAMMetricsRequest
             {
@@ -35,37 +36,38 @@ namespace MetricsManager.Controllers
             }));
         }
 
-        [HttpGet("agent-old/{agentId}/from/{fromTime}/to/{toTime}")]
-        public ActionResult<RAMMetricsResponse> GetRamMetricsFromAgentOld(
-            [FromRoute] int agentId, [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
-        {
-            AgentInfo agentInfo = _agentPool.Get().FirstOrDefault(agent => agent.AgentId == agentId);
-            if (agentInfo == null)
-                return BadRequest();
+        //[HttpGet("agent-old/{agentId}/from/{fromTime}/to/{toTime}")]
+        //public ActionResult<RAMMetricsResponse> GetRamMetricsFromAgentOld(
+        //    [FromRoute] int agentId, [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
+        //{
+        //    AgentInfo agentInfo = _agentPool.Get().FirstOrDefault(agent => agent.AgentId == agentId);
+        //    if (agentInfo == null)
+        //        return BadRequest();
 
-            string requestStr =
-                $"{agentInfo.AgentAdress}api/metrics/ram/from/{fromTime.ToString("dd\\.hh\\:mm\\:ss")}/to/{toTime.ToString("dd\\.hh\\:mm\\:ss")}";
-            HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, requestStr);
-            httpRequestMessage.Headers.Add("Accept", "application/json");
-            HttpClient httpClient = _httpClientFactory.CreateClient();
+        //    string requestStr =
+        //        $"{agentInfo.AgentAdress}api/metrics/ram/from/{fromTime.ToString("dd\\.hh\\:mm\\:ss")}/to/{toTime.ToString("dd\\.hh\\:mm\\:ss")}";
+        //    HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, requestStr);
+        //    httpRequestMessage.Headers.Add("Accept", "application/json");
+        //    HttpClient httpClient = _httpClientFactory.CreateClient();
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            cancellationTokenSource.CancelAfter(3000); // 3 сек
+        //    CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        //    cancellationTokenSource.CancelAfter(3000); // 3 сек
 
-            HttpResponseMessage response = httpClient.Send(httpRequestMessage, cancellationTokenSource.Token);
-            if (response.IsSuccessStatusCode)
-            {
-                string responseStr = response.Content.ReadAsStringAsync().Result;
-                RAMMetricsResponse ramMetricsResponse =
-                    (RAMMetricsResponse)JsonConvert.DeserializeObject(responseStr, typeof(RAMMetricsResponse));
-                ramMetricsResponse.AgentId = agentId;
-                return Ok(ramMetricsResponse);
-            }
-            return BadRequest();
-        }
+        //    HttpResponseMessage response = httpClient.Send(httpRequestMessage, cancellationTokenSource.Token);
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        string responseStr = response.Content.ReadAsStringAsync().Result;
+        //        RAMMetricsResponse ramMetricsResponse =
+        //            (RAMMetricsResponse)JsonConvert.DeserializeObject(responseStr, typeof(RAMMetricsResponse));
+        //        ramMetricsResponse.AgentId = agentId;
+        //        return Ok(ramMetricsResponse);
+        //    }
+        //    return BadRequest();
+        //}
 
-        [HttpGet("all/from/{fromTime}/to/{toTime}")]
-        public IActionResult GetRAMMetricsFromAll([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
+        [HttpGet("all-ram")]
+        //[HttpGet("all/from/{fromTime}/to/{toTime}")]
+        public IActionResult GetRAMMetricsFromAll([FromQuery] TimeSpan fromTime, [FromQuery] TimeSpan toTime)
         {
             return Ok();
         }
